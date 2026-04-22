@@ -334,7 +334,7 @@ export default function Saathban() {
         <div style={{ maxWidth: 1160, margin: "0 auto", padding: "0 24px" }}>
           <FadeIn>
             <img 
-              src="/saathbanimage.jpeg" 
+              src="/saathbanimage.png" 
               alt="Saathban community" 
               style={{ 
                 width: "100%", 
