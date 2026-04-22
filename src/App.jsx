@@ -329,7 +329,25 @@ export default function Saathban() {
         </div>
       </section>
 
-      {/* ═══════════ ABOUT ═══════════ */}
+     {/* ═══════════ IMAGE BANNER ═══════════ */}
+      <section style={{ padding: "60px 0", background: C.bg }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto", padding: "0 24px" }}>
+          <FadeIn>
+            <img 
+              src="/saathbanimage.jpeg" 
+              alt="Saathban community" 
+              style={{ 
+                width: "100%", 
+                height: "auto", 
+                borderRadius: 20, 
+                boxShadow: "0 8px 32px rgba(6,50,20,0.12)",
+                display: "block"
+              }} 
+            />
+          </FadeIn>
+        </div>
+      </section>
+       {/* ═══════════ ABOUT ═══════════ */}
       <section id="about" className="section-pad" style={{ padding: "100px 0", background: C.white }}>
         <div style={px}>
           <SecTitle sub="The Heart of Togetherness">About Saathban</SecTitle>
