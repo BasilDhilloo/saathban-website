@@ -262,7 +262,12 @@ function EventDetailPage({ event, onBack }) {
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", color: C.textMain, background: C.bg, minHeight: "100vh" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@0,300;0,400;0,500;0,600;0,700&display=swap');`}</style>
+      style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@0,300;0,400;0,500;0,600;0,700&display=swap');
+        @media(max-width:640px) {
+          .event-detail-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+        }
+      `}</style>
 
       {/* Back bar */}
       <div style={{ background: C.green, padding: "14px 24px", position: "sticky", top: 0, zIndex: 100 }}>
