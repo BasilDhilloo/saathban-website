@@ -37,7 +37,7 @@ const EVENTS = [
       fullDate: "Saturday, 22nd March 2025",
       time: "3:00 PM – 5:00 PM",
       venue: "Alhamra Arts Council, Mall Road, Lahore",
-      about: `Chai & Conversations was Saathban's first community event in Lahore — a warm, intimate afternoon bringing together senior residents from local aged care homes and young volunteers from universities across the city.\n\nOver steaming cups of chai and homemade biscuits, our Saath-Icons shared stories from their lives — tales of Partition, of building careers and families, of the Lahore they once knew. Our Saath-Buddies listened, laughed, and left changed.\n\nThe event reminded us why Saathban exists: not to deliver a service, but to restore a connection.`,
+      about: `Chai & Conversations was Saathban's first community event in Lahore. A warm, intimate afternoon bringing together senior residents from local aged care homes and young volunteers from universities across the city.\n\nOver steaming cups of chai and homemade biscuits, our Saath-Icons shared stories from their lives; tales of Partition, of building careers and families, of the Lahore they once knew. Our Saath-Buddies listened, laughed, and left changed.\n\nThe event reminded us why Saathban exists: not to deliver a service, but to restore a connection.`,
       highlights: [
         "30+ senior citizens attended from 3 local aged care homes",
         "20 student volunteers from LUMS",
@@ -87,8 +87,8 @@ const BLOGS = [
 // -- Research Reports --
 // to add a new report: add an object to this array with title, year, summary, and a link.
 const RESEARCH = [
-  { title: "Saathban Community Report 2025",
-    year: "2025",
+  { title: "Saathban Community Report 2026",
+    year: "2026",
     summary: "Coming soon",
     link: null, // replace null with report URL when ready e.g. "/reports/saathban-2025.pdf"
     tag: "Our Report",
@@ -346,7 +346,7 @@ function EventDetailPage({ event, onBack }) {
         <FadeIn delay={0.2}>
           <div style={{ marginBottom: 56 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 8 }}>Gallery</h2>
-            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 24, fontStyle: "italic" }}>Photos from the event — replace placeholders with real images.</p>
+            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 24, fontStyle: "italic" }}>Photos from the event.</p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
               {d.gallery.map((g, i) => (
                 <div key={i} style={{ background: `linear-gradient(135deg, ${C.green}10, ${C.brown}06)`, borderRadius: 14, aspectRatio: "4/3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, border: `1px dashed ${C.warmGray}` }}>
@@ -442,6 +442,7 @@ export default function Saathban() {
         @media(max-width:900px) { .grid3, .grid4 { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width:640px) { .grid2, .grid3, .grid4 { grid-template-columns: 1fr; } .hide-mobile { display: none !important; } .show-mobile { display: flex !important; } .hero-text { font-size: 2.4rem !important; } .section-pad { padding: 72px 0 !important; } .hero-flex { flex-direction: column; } }
         @media(min-width:641px) { .show-mobile { display: none !important; } }
+        @media(max-width:640px) { .mission-grid { grid-template-columns: 1fr !important; gap: 28px !important; } .event-detail-grid { grid-template-columns: 1fr !important; gap: 20px !important; } }
         a { color: ${C.green}; text-decoration: none; }
         a:hover { color: ${C.greenLight}; }
       `}</style>
@@ -631,7 +632,7 @@ export default function Saathban() {
           {/* Mission */}
           {activeTab === "mission" && (
             <FadeIn>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }} className="grid2">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }} className="mission-grid">
                 <div>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 18 }}>Our Mission</h3>
                   <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted }}>
@@ -723,7 +724,7 @@ export default function Saathban() {
               </span>
               Events
             </h3>
-            <div className="grid3">
+            <div className="event-detail-grid">
               {EVENTS.map((ev, i) => (
                 <Card key={i} style={{ overflow: "hidden", position: "relative" }}
                   onClick={ev.detail ? () => setActiveEvent(ev) : undefined}
