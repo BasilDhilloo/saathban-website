@@ -165,9 +165,9 @@ function Btn({ children, onClick, variant = "primary", style: s = {}, href }) {
 }
 
 // ─── Card ───
-function Card({ children, style: s = {}, hover = true }) {
+function Card({ children, style: s = {}, hover = true, onClick }) {
   return (
-    <div style={{ background: C.white, borderRadius: 16, padding: 32, boxShadow: "0 2px 20px rgba(6,50,20,0.06)", transition: "all 0.35s ease", ...s }}
+    <div onClick={onClick} style={{ background: C.white, borderRadius: 16, padding: 32, boxShadow: "0 2px 20px rgba(6,50,20,0.06)", transition: "all 0.35s ease", cursor: onClick ? "pointer" : "default", ...s }}
       onMouseEnter={hover ? e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 8px 36px rgba(6,50,20,0.1)"; } : undefined}
       onMouseLeave={hover ? e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 20px rgba(6,50,20,0.06)"; } : undefined}
     >{children}</div>
@@ -543,7 +543,7 @@ export default function Saathban() {
             <Stat number="500+" label="Seniors Reached" delay={0.1} />
             <Stat number="50+" label="Volunteers" delay={0.2} />
             <Stat number="12+" label="Events Held" delay={0.3} />
-            <Stat number="📄" label="Reports" delay={0.4} />
+            {/* <Stat number="3" label="Reports" delay={0.4} /> //add whenever a good amount is reached*/}
           </div>
         </div>
       </section>
