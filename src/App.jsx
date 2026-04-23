@@ -310,7 +310,7 @@ function EventDetailPage({ event, onBack }) {
         </FadeIn>
 
         {/* Highlights + Agenda */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 56 }} className="grid2">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 56 }} className="event-detail-grid">
           <FadeIn delay={0.1}>
             <div style={{ background: C.white, borderRadius: 16, padding: 32, boxShadow: "0 2px 20px rgba(6,50,20,0.06)" }}>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: C.green, marginBottom: 20 }}>Event Highlights</h3>
@@ -724,7 +724,7 @@ export default function Saathban() {
               </span>
               Events
             </h3>
-            <div className="event-detail-grid">
+            <div className="grid3">
               {EVENTS.map((ev, i) => (
                 <Card key={i} style={{ overflow: "hidden", position: "relative" }}
                   onClick={ev.detail ? () => setActiveEvent(ev) : undefined}
