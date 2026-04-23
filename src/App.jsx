@@ -16,16 +16,66 @@ const C = {
 
 // ─── Data ───
 const TEAM = [
-  { name: "Founder Name", role: "Co-Founder & Director", initials: "FN", color: C.green },
-  { name: "Founder Name", role: "Co-Founder & Research Head", initials: "FN", color: C.brown },
-  { name: "Team Member", role: "Community Outreach Lead", initials: "TM", color: C.greenMuted },
-  { name: "Team Member", role: "Volunteer Coordinator", initials: "TM", color: C.brownLight },
+  { name: "Co-Founder", role: "Co-Founder", initials: "CF", color: C.green },
+  { name: "Co-Founder", role: "Co-Founder", initials: "CF", color: C.brown },
+  { name: "Research Head", role: "Research Head", initials: "RH", color: C.greenMuted },
+  { name: "Research Assistant", role: "Research Assistant", initials: "RA", color: C.brownLight },
+  { name: "Design Associate", role: "Design Associate", initials: "DA", color: C.olive },
+  { name: "Team Member", role: "Team Member", initials: "TM", color: C.sage },
 ];
-
+//-- Events --
+// to add a new event: copy one object below and fill in the details
 const EVENTS = [
-  { title: "Chai & Conversations", date: "Apr 12, 2026", loc: "Community Hall, Delhi", desc: "An afternoon of storytelling and warm chai with senior residents of local aged care homes.", color: C.brown },
-  { title: "Bridging Generations Workshop", date: "May 3, 2026", loc: "Virtual Event", desc: "Interactive workshop pairing Saath-Buddies with Saath-Icons for meaningful intergenerational dialogue.", color: C.green },
-  { title: "Walk With Me — Senior Wellness Walk", date: "Jun 15, 2026", loc: "Lodhi Garden, Delhi", desc: "A gentle group walk promoting physical and mental health among senior citizens.", color: C.olive },
+  {
+    id: "chai-conversations-lahore",
+    title: "Chai & Conversations — Lahore",
+    date: "Mar 22, 2025",
+    loc: "Alhamra Arts Council, Lahore",
+    desc: "An afternoon of storytelling and warm chai with senior residents of local aged care homes in Lahore.",
+    color: C.brown,
+    detail: {
+      fullDate: "Saturday, 22nd March 2025",
+      time: "3:00 PM – 5:00 PM",
+      venue: "Alhamra Arts Council, Mall Road, Lahore",
+      about: `Chai & Conversations was Saathban's first community event in Lahore — a warm, intimate afternoon bringing together senior residents from local aged care homes and young volunteers from universities across the city.\n\nOver steaming cups of chai and homemade biscuits, our Saath-Icons shared stories from their lives — tales of Partition, of building careers and families, of the Lahore they once knew. Our Saath-Buddies listened, laughed, and left changed.\n\nThe event reminded us why Saathban exists: not to deliver a service, but to restore a connection.`,
+      highlights: [
+        "30+ senior citizens attended from 3 local aged care homes",
+        "20 student volunteers from LUMS",
+        "Handwritten letters exchanged between Saath-Buddies and Saath-Icons",
+      ],
+      agenda: [
+        { time: "3:00 PM", item: "Arrival & welcome tea" },
+        { time: "3:30 PM", item: "Opening remarks by Saathban co-founders" },
+        { time: "4:15 PM", item: "Letter-writing activity" },
+        { time: "4:45 PM", item: "Group photo & closing chai" },
+      ],
+      gallery: [
+        { label: "Welcome gathering", emoji: "🫖" },
+        { label: "Storytelling circle", emoji: "💬" },
+        { label: "Ghazal performance", emoji: "🎵" },
+        { label: "Letter writing", emoji: "✉️" },
+      ],
+      quote: { text: "I haven't laughed like that in years. These young people gave me something I didn't know I was missing.", author: "Saath-Icon, 74, Lahore" },
+    },
+  },
+  {
+    id: "bridging-generations-workshop",
+    title: "Bridging Generations Workshop",
+    date: "May 3, 2026",
+    loc: "Virtual Event",
+    desc: "Interactive workshop pairing Saath-Buddies with Saath-Icons for meaningful intergenerational dialogue.",
+    color: C.green,
+    detail: null, // upcoming — no detail page yet
+  },
+  {
+    id: "walk-with-me",
+    title: "Walk With Me — Senior Wellness Walk",
+    date: "Jun 15, 2026",
+    loc: "Lahore Canal Bank",
+    desc: "A gentle group walk promoting physical and mental health among senior citizens.",
+    color: C.olive,
+    detail: null,
+  },
 ];
 
 const BLOGS = [
@@ -34,15 +84,37 @@ const BLOGS = [
   { title: "5 Simple Ways to Support an Elderly Neighbour", date: "Dec 10, 2025", excerpt: "Practical, everyday actions that combat loneliness and build lasting connections with senior citizens.", tag: "Well-being", color: C.olive },
 ];
 
+// -- Research Reports --
+// to add a new report: add an object to this array with title, year, summary, and a link.
 const RESEARCH = [
-  { title: "Social Isolation & Mental Health in Indian Old Age Homes", year: "2025", summary: "A mixed-methods study examining social engagement and mental well-being among senior living residents." },
-  { title: "Community-Based Interventions for Elderly Loneliness", year: "2026", summary: "Evidence-based programs that reduce loneliness and improve quality of life in aged care settings." },
+  { title: "Saathban Community Report 2025",
+    year: "2025",
+    summary: "Coming soon",
+    link: null, // replace null with report URL when ready e.g. "/reports/saathban-2025.pdf"
+    tag: "Our Report",
+    tagColor: C.brown, },
+  // ── Add more reports below ──
+  // {
+  //   title: "Report Title",
+  //   year: "2026",
+  //   summary: "Brief summary of the report.",
+  //   link: "https://link-to-report.com",
+  //   tag: "Research",
+  //   tagColor: C.green,
+  // },
 ];
 
 const NAV_ITEMS = [
   { label: "Home", id: "home" }, { label: "About", id: "about" }, { label: "Our Work", id: "work" },
   { label: "Get Involved", id: "involve" }, { label: "Blog", id: "blog" }, { label: "Contact", id: "contact" },
 ];
+
+const SOCIAL_LINKS = {
+  email: "hr@saathban.com",
+  instagram: "https://www.instagram.com/saathban?igsh=MWhiNzNvcGJnb21kNA==",
+  facebook: "https://www.facebook.com/share/1Cgk1gCHuf/",
+  linkedin: "https://www.linkedin.com/company/saathban/",
+};
 
 // ─── Fade-In Observer ───
 function FadeIn({ children, className = "", delay = 0, style: extra = {} }) {
@@ -182,6 +254,139 @@ function HeroIllustration() {
   );
 }
 
+// ─── Event Detail Page ───
+function EventDetailPage({ event, onBack }) {
+  const d = event.detail;
+  const px = { maxWidth: 900, margin: "0 auto", padding: "0 24px" };
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif", color: C.textMain, background: C.bg, minHeight: "100vh" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@0,300;0,400;0,500;0,600;0,700&display=swap');`}</style>
+
+      {/* Back bar */}
+      <div style={{ background: C.green, padding: "14px 24px", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={onBack} style={{ background: "rgba(250,243,233,0.12)", border: "none", borderRadius: 40, padding: "8px 20px", color: C.cream, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background 0.3s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(250,243,233,0.22)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(250,243,233,0.12)"}>
+            ← Back to Events
+          </button>
+          <span style={{ color: "rgba(250,243,233,0.5)", fontSize: 13 }}>Saathban Events</span>
+        </div>
+      </div>
+
+      {/* Hero banner */}
+      <div style={{ background: `linear-gradient(135deg, ${C.green}, ${C.greenLight})`, padding: "64px 24px 56px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -60, right: -60, width: 240, height: 240, borderRadius: "50%", border: "1px solid rgba(250,243,233,0.08)" }} />
+        <div style={{ position: "absolute", bottom: -40, left: -40, width: 180, height: 180, borderRadius: "50%", background: `${C.brown}15` }} />
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto" }}>
+          <span style={{ display: "inline-block", background: `${C.brown}`, borderRadius: 40, padding: "6px 18px", marginBottom: 20, fontSize: 12, fontWeight: 700, color: C.cream, letterSpacing: "0.08em", textTransform: "uppercase" }}>Past Event</span>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.8rem,4vw,3rem)", color: C.cream, fontWeight: 700, lineHeight: 1.2, marginBottom: 16 }}>{event.title}</h1>
+          <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 20 }}>
+            <span style={{ color: "rgba(250,243,233,0.8)", fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+              📅 {d.fullDate}
+            </span>
+            <span style={{ color: "rgba(250,243,233,0.8)", fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+              🕒 {d.time}
+            </span>
+            <span style={{ color: "rgba(250,243,233,0.8)", fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>
+              📍 {d.venue}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ ...px, padding: "60px 24px" }}>
+
+        {/* About the event */}
+        <FadeIn>
+          <div style={{ marginBottom: 56 }}>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 20 }}>About the Event</h2>
+            {d.about.split("\n\n").map((para, i) => (
+              <p key={i} style={{ fontSize: 16, lineHeight: 1.85, color: C.textMuted, marginBottom: 16 }}>{para}</p>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Highlights + Agenda */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 56 }} className="grid2">
+          <FadeIn delay={0.1}>
+            <div style={{ background: C.white, borderRadius: 16, padding: 32, boxShadow: "0 2px 20px rgba(6,50,20,0.06)" }}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: C.green, marginBottom: 20 }}>Event Highlights</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {d.highlights.map((h, i) => (
+                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: `${C.brown}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+                      <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.brown }} />
+                    </div>
+                    <span style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <div style={{ background: C.white, borderRadius: 16, padding: 32, boxShadow: "0 2px 20px rgba(6,50,20,0.06)" }}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: C.green, marginBottom: 20 }}>Event Agenda</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {d.agenda.map((a, i) => (
+                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", paddingBottom: i < d.agenda.length - 1 ? 16 : 0, borderBottom: i < d.agenda.length - 1 ? `1px solid ${C.warmGray}50` : "none", marginBottom: i < d.agenda.length - 1 ? 16 : 0 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: C.brown, whiteSpace: "nowrap", paddingTop: 2, minWidth: 54 }}>{a.time}</span>
+                    <span style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.55 }}>{a.item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Photo gallery (placeholder) */}
+        <FadeIn delay={0.2}>
+          <div style={{ marginBottom: 56 }}>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 8 }}>Gallery</h2>
+            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 24, fontStyle: "italic" }}>Photos from the event — replace placeholders with real images.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+              {d.gallery.map((g, i) => (
+                <div key={i} style={{ background: `linear-gradient(135deg, ${C.green}10, ${C.brown}06)`, borderRadius: 14, aspectRatio: "4/3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, border: `1px dashed ${C.warmGray}` }}>
+                  <span style={{ fontSize: 36 }}>{g.emoji}</span>
+                  <span style={{ fontSize: 13, color: C.textMuted, fontWeight: 500 }}>{g.label}</span>
+                  <span style={{ fontSize: 11, color: C.warmGray, fontStyle: "italic" }}>Add photo</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Quote */}
+        <FadeIn delay={0.25}>
+          <div style={{ background: `linear-gradient(135deg, ${C.green}08, ${C.brown}06)`, borderRadius: 20, padding: "44px 48px", textAlign: "center", border: `1px solid ${C.warmGray}50`, marginBottom: 56 }}>
+            <div style={{ fontSize: 48, color: C.brown, opacity: 0.2, fontFamily: "Georgia, serif", lineHeight: 1, marginBottom: 8 }}>"</div>
+            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.1rem,2.5vw,1.4rem)", fontStyle: "italic", color: C.green, lineHeight: 1.7, maxWidth: 620, margin: "0 auto 16px" }}>
+              {d.quote.text}
+            </p>
+            <span style={{ fontSize: 14, color: C.textMuted, fontWeight: 600 }}>— {d.quote.author}</span>
+          </div>
+        </FadeIn>
+
+        {/* CTA */}
+        <FadeIn delay={0.3}>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontSize: 16, color: C.textMuted, marginBottom: 20 }}>Want to be part of our next event?</p>
+            <Btn onClick={onBack}>← See All Events</Btn>
+          </div>
+        </FadeIn>
+      </div>
+
+      {/* Footer strip */}
+      <div style={{ background: C.green, padding: "24px", textAlign: "center", marginTop: 40 }}>
+        <span style={{ fontSize: 13, color: "rgba(250,243,233,0.5)" }}>© 2026 Saathban — Timeless Togetherness</span>
+      </div>
+    </div>
+  );
+}
+
 /* ════════════════════════════════
    MAIN APP
    ════════════════════════════════ */
@@ -193,6 +398,7 @@ export default function Saathban() {
   const [contact, setContact] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
+  const [activeEvent, setActiveEvent] = useState(null);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 50);
@@ -205,7 +411,20 @@ export default function Saathban() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  if (activeEvent) {
+    return <EventDetailPage event={activeEvent} onBack={() => { setActiveEvent(null); setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 100); }} />;
+  }
+   
   const px = { maxWidth: 1160, margin: "0 auto", padding: "0 24px" };
+
+  const SocialIcon = ({ href, icon, bg }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer"
+      style={{ width: 40, height: 40, borderRadius: 10, background: bg || "rgba(250,243,233,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s", flexShrink: 0 }}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(250,243,233,0.22)"}
+      onMouseLeave={e => e.currentTarget.style.background = bg || "rgba(250,243,233,0.08)"}>
+      {icon}
+    </a>
+  );
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", color: C.textMain, background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
@@ -324,7 +543,7 @@ export default function Saathban() {
             <Stat number="500+" label="Seniors Reached" delay={0.1} />
             <Stat number="50+" label="Volunteers" delay={0.2} />
             <Stat number="12+" label="Events Held" delay={0.3} />
-            <Stat number="3" label="Reports" delay={0.4} />
+            <Stat number="📄" label="Reports" delay={0.4} />
           </div>
         </div>
       </section>
@@ -454,7 +673,7 @@ export default function Saathban() {
           {/* Team */}
           {activeTab === "team" && (
             <FadeIn>
-              <div className="grid4">
+              <div className="grid4" style={{ maxWidth: 960, margin: "0 auto" }}>
                 {TEAM.map((m, i) => (
                   <Card key={i} style={{ textAlign: "center", padding: 28 }}>
                     <div style={{ width: 72, height: 72, borderRadius: "50%", background: `${m.color}12`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", border: `2px solid ${m.color}25` }}>
@@ -465,9 +684,6 @@ export default function Saathban() {
                   </Card>
                 ))}
               </div>
-              <p style={{ textAlign: "center", marginTop: 24, fontSize: 14, color: C.textMuted, fontStyle: "italic" }}>
-                Update founder names and photos by editing the website content.
-              </p>
             </FadeIn>
           )}
         </div>
@@ -505,19 +721,28 @@ export default function Saathban() {
               <span style={{ width: 36, height: 36, borderRadius: 10, background: `${C.brown}10`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               </span>
-              Upcoming Events
+              Events
             </h3>
             <div className="grid3">
               {EVENTS.map((ev, i) => (
-                <Card key={i} style={{ overflow: "hidden" }}>
+                <Card key={i} style={{ overflow: "hidden", position: "relative" }}>
+                  onClick={ev.detail ? () => setActiveEvent(ev) : undefined}
+                  hover={true}>
                   <div style={{ height: 6, background: ev.color, margin: "-32px -32px 20px -32px", borderRadius: "16px 16px 0 0" }} />
+                  <span style={{ position: "absolute", top: 22, right: 20, fontSize: 11, fontWeight: 700, color: ev.detail ? C.brown : C.green, background: ev.detail ? `${C.brown}12` : `${C.green}10`, padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {ev.detail ? "Past" : "Upcoming"}
+                  </span>
                   <span style={{ fontSize: 12, fontWeight: 600, color: ev.color, textTransform: "uppercase", letterSpacing: "0.08em" }}>{ev.date}</span>
                   <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: "8px 0", lineHeight: 1.35 }}>{ev.title}</h4>
                   <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     {ev.loc}
                   </p>
-                  <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>{ev.desc}</p>
+                  <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, marginBottom: ev.detail ? 16 : 0 }}>{ev.desc}</p>
+                  {ev.detail && (
+                    <span style={{ fontSize: 13, fontWeight: 600, color: C.brown, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      View Event Details →
+                    </span>
                 </Card>
               ))}
             </div>
@@ -625,25 +850,34 @@ export default function Saathban() {
               <div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 24 }}>Reach Out</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                  <a href="mailto:saathban@gmail.com" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
+                  <a href={`mailto:${SOCIAL_LINKS.email}`} style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
                     <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
                     </div>
                     <div>
                       <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Email</div>
-                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>saathban@gmail.com</div>
+                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>{SOCIAL_LINKS.email}</div>
                     </div>
                   </a>
-                  <a href="https://instagram.com/__saathban__" target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
+                  <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
                     <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.brown}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill={C.brown}/></svg>
                     </div>
                     <div>
                       <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Instagram</div>
-                      <div style={{ fontSize: 15, color: C.brown, fontWeight: 500 }}>@__saathban__</div>
+                      <div style={{ fontSize: 15, color: C.brown, fontWeight: 500 }}>@saathban</div>
                     </div>
                   </a>
-                  <a href="https://www.linkedin.com/in/saathban-timeless-togetherness-7636953b4" target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
+                  <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Facebook</div>
+                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>Saathban</div>
+                    </div>
+                  </a>
+                  <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
                     <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
                     </div>
@@ -703,18 +937,10 @@ export default function Saathban() {
             <div>
               <h4 style={{ fontSize: 13, fontWeight: 700, color: C.cream, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16 }}>Connect</h4>
               <div style={{ display: "flex", gap: 12 }}>
-                <a href="mailto:saathban@gmail.com" style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(250,243,233,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(250,243,233,0.2)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(250,243,233,0.08)"}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
-                </a>
-                <a href="https://instagram.com/__saathban__" target="_blank" rel="noopener noreferrer" style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(250,243,233,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(250,243,233,0.2)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(250,243,233,0.08)"}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
-                </a>
-                <a href="https://www.linkedin.com/in/saathban-timeless-togetherness-7636953b4" target="_blank" rel="noopener noreferrer" style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(250,243,233,0.08)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(250,243,233,0.2)"} onMouseLeave={e => e.currentTarget.style.background = "rgba(250,243,233,0.08)"}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                </a>
+                <SocialIcon href={`mailto:${SOCIAL_LINKS.email}`} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>} />
+                <SocialIcon href={SOCIAL_LINKS.instagram} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>} />
+                <SocialIcon href={SOCIAL_LINKS.facebook} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>} />
+                <SocialIcon href={SOCIAL_LINKS.linkedin} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>} />
               </div>
             </div>
           </div>
