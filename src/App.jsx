@@ -725,7 +725,7 @@ export default function Saathban() {
             </h3>
             <div className="grid3">
               {EVENTS.map((ev, i) => (
-                <Card key={i} style={{ overflow: "hidden", position: "relative" }}>
+                <Card key={i} style={{ overflow: "hidden", position: "relative" }}
                   onClick={ev.detail ? () => setActiveEvent(ev) : undefined}
                   hover={true}>
                   <div style={{ height: 6, background: ev.color, margin: "-32px -32px 20px -32px", borderRadius: "16px 16px 0 0" }} />
@@ -743,6 +743,7 @@ export default function Saathban() {
                     <span style={{ fontSize: 13, fontWeight: 600, color: C.brown, display: "inline-flex", alignItems: "center", gap: 6 }}>
                       View Event Details →
                     </span>
+                  )}
                 </Card>
               ))}
             </div>
