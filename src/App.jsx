@@ -283,7 +283,7 @@ export default function Saathban() {
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <div style={{ position: "absolute", top: "-10%", right: "-5%", width: "55vw", height: "55vw", maxWidth: 700, maxHeight: 700, borderRadius: "50%", background: `radial-gradient(circle, ${C.green}08, transparent 70%)` }} />
           <div style={{ position: "absolute", bottom: "5%", left: "-8%", width: "40vw", height: "40vw", maxWidth: 500, maxHeight: 500, borderRadius: "50%", background: `radial-gradient(circle, ${C.brown}08, transparent 70%)` }} />
-          <div style={{ position: "absolute", top: "20%", left: "65%", width: 160, height: 160, borderRadius: "50%", border: `2px solid ${C.green}12`, animation: "float 6s ease-in-out infinite" }} />
+          <div className="hide-mobile" style={{ position: "absolute", top: "20%", left: "65%", width: 160, height: 160, borderRadius: "50%", border: `2px solid ${C.green}12`, animation: "float 6s ease-in-out infinite" }} />
           {/* Leaf pattern */}
           <svg style={{ position: "absolute", top: "15%", left: "5%", opacity: 0.05 }} width="120" height="120">
             {[0, 1, 2, 3].map(i => <path key={i} d={`M${30 + i * 25} 60 Q${40 + i * 25} ${40 - i * 5}, ${50 + i * 25} 60 Q${40 + i * 25} ${80 + i * 5}, ${30 + i * 25} 60Z`} fill={C.green} transform={`rotate(${i * 30} ${40 + i * 25} 60)`} />)}
