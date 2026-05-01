@@ -407,6 +407,8 @@ export default function Saathban() {
   const [sent, setSent] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
   const [activeEvent, setActiveEvent] = useState(null);
+  const [emailError, setEmailError] = useState("");
+  const [subEmailError, setSubEmailError] = useState("");
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 50);
@@ -433,6 +435,8 @@ export default function Saathban() {
       {icon}
     </a>
   );
+
+  const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", color: C.textMain, background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
@@ -857,13 +861,22 @@ export default function Saathban() {
                     <input type="email" placeholder="Your email address" value={email}
                       onChange={e => setEmail(e.target.value)}
                       style={{ flex: "1 1 240px", padding: "14px 20px", borderRadius: 50, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.textMain, minWidth: 200 }} />
+                    {subEmailError && (
+                      <p style={{ fontSize: 12, color: C.brown, margin: 0 }}>
+                        {subEmailError}
+                      </p>
+                    )}
                     <Btn onClick={async () => {
-                      if (!email.includes("@")) return;
+                      setSubEmailError("");
+                      if (!isValidEmail(email)) {
+                        setSubEmailError("Please enter a valid email address.");
+                        return;
+                      }
                       setSubLoading(true);
-                      setSubError(false);
-                      await fetch(SOCIAL_LINKS.script + "?type=newsletter&email=" + encodeURIComponent(email),
-                        { method: "GET", mode: "no-cors" }
-                      );
+                      const fd = new FormData();
+                      fd.append("type", "newsletter");
+                      fd.append("email", email);
+                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: fd });
                       setSubbed(true);
                       setSubLoading(false);
                     }}>{subLoading ? "Subscribing..." : "Subscribe"}</Btn>
@@ -967,18 +980,28 @@ export default function Saathban() {
                     <input type="email" placeholder="Your Email" value={contact.email}
                       onChange={e => setContact({ ...contact, email: e.target.value })}
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
+                    {emailError && (
+                      <p style={{ fontSize: 12, color: C.brown, marginTop: -10, marginBottom: -4 }}>
+                        {emailError}
+                      </p>
+                    )}
                     <textarea placeholder="Your Message" rows={4} value={contact.message}
                       onChange={e => setContact({ ...contact, message: e.target.value })}
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
                     <Btn onClick={async () => {
+                      setEmailError("");
                       if (!contact.name || !contact.email || !contact.message) return;
-                      await fetch(SOCIAL_LINKS.script + "?type=contact"
-                        + "&name=" + encodeURIComponent(contact.name)
-                        + "&email=" + encodeURIComponent(contact.email)
-                        + "&message=" + encodeURIComponent(contact.message)
-                        + "&contactType=" + encodeURIComponent(contact.contactType),
-                        { method: "GET", mode: "no-cors" }
-                      );
+                      if (!isValidEmail(contact.email)) {
+                        setEmailError("Please enter a valid email address.");
+                        return;
+                      }
+                      const fd = new FormData();
+                      fd.append("type", "contact");
+                      fd.append("name", contact.name);
+                      fd.append("email", contact.email);
+                      fd.append("message", contact.message);
+                      fd.append("contactType", contact.contactType);
+                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: fd });
                       setSent(true);
                     }}>Send Message</Btn>
                   </div>
