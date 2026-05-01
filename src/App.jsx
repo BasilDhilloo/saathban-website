@@ -87,10 +87,10 @@ const BLOGS = [
 // -- Research Reports --
 // to add a new report: add an object to this array with title, year, summary, and a link.
 const RESEARCH = [
-  { title: "Saathban Community Report 2026",
+  { title: "Ageing in a Young Nation",
     year: "2026",
-    summary: "Coming soon",
-    link: null, // replace null with report URL when ready e.g. "/reports/saathban-2025.pdf"
+    summary: "Our foundational secondary report examining global and Pakistan demographics with special emphasis on the elderly. Documenting ageing trends, policy landscape, and the institutional ecosystem.",
+    link: "/ageing-in-a-young-nation.pdf", // replace null with report URL when ready e.g. "/reports/saathban-2025.pdf"
     tag: "Our Report",
     tagColor: C.brown, },
   // ── Add more reports below ──
@@ -114,6 +114,7 @@ const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/saathban?igsh=MWhiNzNvcGJnb21kNA==",
   facebook: "https://www.facebook.com/share/1Cgk1gCHuf/",
   linkedin: "https://www.linkedin.com/company/saathban/",
+  script: "https://script.google.com/macros/s/AKfycbwhsLn3sQDn49QhtyPq5gvMj2cM4FD8e-mOColpr1zeiQN2RJK3j9fEBEh-_GRIZjjmPHw/exec",
 };
 
 // ─── Fade-In Observer ───
@@ -400,7 +401,9 @@ export default function Saathban() {
   const [scrolled, setScrolled] = useState(false);
   const [email, setEmail] = useState("");
   const [subbed, setSubbed] = useState(false);
-  const [contact, setContact] = useState({ name: "", email: "", message: "" });
+  const [contact, setContact] = useState({ name: "", email: "", message: "", contactType: "General" });
+  const [subLoading, setSubLoading] = useState(false);
+  const [subError, setSubError] = useState(false);
   const [sent, setSent] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
   const [activeEvent, setActiveEvent] = useState(null);
@@ -475,7 +478,7 @@ export default function Saathban() {
 
           {/* Desktop links */}
           <div className="hide-mobile" style={{ display: "flex", gap: 28, alignItems: "center" }}>
-            {NAV_ITEMS.map(n => (
+            {NAV_ITEMS.filter(n => n.id !== "involve").map(n => (
               <span key={n.id} onClick={() => scrollTo(n.id)} style={{
                 cursor: "pointer", fontSize: 13.5, fontWeight: 600, color: C.brown, letterSpacing: "0.05em",
                 textTransform: "uppercase", transition: "color 0.3s", padding: "4px 0",
@@ -775,7 +778,10 @@ export default function Saathban() {
                 <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>
                   Spend time with Saath-Icons, help organise events, or contribute your skills remotely. Volunteering with Saathban means making a direct impact on elderly well-being in your community.
                 </p>
-                <Btn variant="brown" onClick={() => scrollTo("contact")}>Volunteer Now →</Btn>
+                <Btn variant="brown" onClick={() => {
+                  setContact(c => ({ ...c, contactType: "Volunteer", message: "Hi, I'm interested in volunteering with Saathban." }));
+                  scrollTo("contact");
+                }}>Volunteer Now →</Btn>
               </div>
             </FadeIn>
 
@@ -788,7 +794,10 @@ export default function Saathban() {
                 <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>
                   Are you an organisation, old age home, or senior living community? Let's collaborate to create intergenerational programmes, co-host events, or support our research.
                 </p>
-                <Btn variant="brown" onClick={() => scrollTo("contact")}>Partner With Us →</Btn>
+                <Btn variant="brown" onClick={() => {
+                  setContact(c => ({ ...c, contactType: "Partner", message: "Hi, I'd like to explore partnering with Saathban." }));
+                  scrollTo("contact");
+                }}>Partner With Us →</Btn>
               </div>
             </FadeIn>
           </div>
@@ -831,15 +840,35 @@ export default function Saathban() {
               {subbed ? (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: C.green, fontWeight: 600, fontSize: 16 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-                  Thank you for subscribing!
+                  You're subscribed — welcome to the community!
                 </div>
               ) : (
-                <div style={{ display: "flex", gap: 12, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
-                  <input
-                    type="email" placeholder="Your email address" value={email} onChange={e => setEmail(e.target.value)}
-                    style={{ flex: "1 1 240px", padding: "14px 20px", borderRadius: 50, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.textMain, minWidth: 200 }}
-                  />
-                  <Btn onClick={() => { if (email.includes("@")) setSubbed(true); }}>Subscribe</Btn>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: 12, maxWidth: 440, width: "100%", flexWrap: "wrap", justifyContent: "center" }}>
+                    <input type="email" placeholder="Your email address" value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      style={{ flex: "1 1 240px", padding: "14px 20px", borderRadius: 50, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.textMain, minWidth: 200 }} />
+                    <Btn onClick={async () => {
+                      if (!email.includes("@")) return;
+                      setSubLoading(true);
+                      setSubError(false);
+                      try {
+                        await fetch(SOCIAL_LINKS.script, {
+                          method: "POST",
+                          body: JSON.stringify({ type: "newsletter", email }),
+                        });
+                        setSubbed(true);
+                      } catch {
+                        setSubError(true);
+                      }
+                      setSubLoading(false);
+                    }}>{subLoading ? "Subscribing..." : "Subscribe"}</Btn>
+                  </div>
+                  {subError && (
+                    <p style={{ fontSize: 13, color: C.brown, margin: 0 }}>
+                      Something went wrong — email us at <a href="mailto:hr@saathban.com" style={{ color: C.brown }}>hr@saathban.com</a> to subscribe.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -905,15 +934,50 @@ export default function Saathban() {
                       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
                     </div>
                     <h4 style={{ fontSize: 20, fontWeight: 700, color: C.green, marginBottom: 8 }}>Message Sent!</h4>
-                    <p style={{ fontSize: 14, color: C.textMuted }}>We'll get back to you soon.</p>
+                    <p style={{ fontSize: 14, color: C.textMuted }}>We'll get back to you soon at {contact.email}.</p>
+                    <span onClick={() => { setSent(false); setContact({ name: "", email: "", message: "", contactType: "General" }); }}
+                      style={{ fontSize: 13, color: C.brown, cursor: "pointer", marginTop: 12, display: "inline-block", fontWeight: 600 }}>
+                      Send another message
+                    </span>
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-                    <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green, marginBottom: 4 }}>Send Us a Message</h4>
-                    <input placeholder="Your Name" value={contact.name} onChange={e => setContact({ ...contact, name: e.target.value })} style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
-                    <input type="email" placeholder="Your Email" value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })} style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
-                    <textarea placeholder="Your Message" rows={4} value={contact.message} onChange={e => setContact({ ...contact, message: e.target.value })} style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
-                    <Btn onClick={() => { if (contact.name && contact.email && contact.message) setSent(true); }}>Send Message</Btn>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green }}>Send Us a Message</h4>
+                      {/* Contact type pill */}
+                      <div style={{ display: "flex", gap: 6 }}>
+                        {["General", "Volunteer", "Partner"].map(t => (
+                          <span key={t} onClick={() => setContact(c => ({ ...c, contactType: t }))}
+                            style={{ fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, cursor: "pointer", letterSpacing: "0.04em",
+                              background: contact.contactType === t ? C.green : `${C.warmGray}60`,
+                              color: contact.contactType === t ? C.cream : C.textMuted,
+                              transition: "all 0.2s ease" }}>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <input placeholder="Your Name" value={contact.name}
+                      onChange={e => setContact({ ...contact, name: e.target.value })}
+                      style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
+                    <input type="email" placeholder="Your Email" value={contact.email}
+                      onChange={e => setContact({ ...contact, email: e.target.value })}
+                      style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
+                    <textarea placeholder="Your Message" rows={4} value={contact.message}
+                      onChange={e => setContact({ ...contact, message: e.target.value })}
+                      style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
+                    <Btn onClick={async () => {
+                      if (!contact.name || !contact.email || !contact.message) return;
+                      try {
+                        await fetch(SOCIAL_LINKS.script, {
+                          method: "POST",
+                          body: JSON.stringify({ type: "contact", ...contact }),
+                        });
+                        setSent(true);
+                      } catch {
+                        alert("Something went wrong. Please email us at hr@saathban.com");
+                      }
+                    }}>Send Message</Btn>
                   </div>
                 )}
               </Card>
@@ -928,7 +992,7 @@ export default function Saathban() {
           <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 40, marginBottom: 40, paddingBottom: 32, borderBottom: "1px solid rgba(250,243,233,0.1)" }}>
             <div style={{ maxWidth: 280 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                <img src="/logo-extended.png" alt="Saathban — Timeless Togetherness" style={{ height: 48, width: "auto", filter: "brightness(10)" }} />
+                <img src="/logo-extended-light.png" alt="Saathban — Timeless Togetherness" style={{ height: 48, width: "auto", filter: "brightness(10)" }} />
               </div>
               <p style={{ fontSize: 14, lineHeight: 1.7 }}>A vibrant ecosystem where generations flourish together. Wisdom inherited, life shared, every age thriving as one.</p>
             </div>
