@@ -114,7 +114,7 @@ const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/saathban?igsh=MWhiNzNvcGJnb21kNA==",
   facebook: "https://www.facebook.com/share/1Cgk1gCHuf/",
   linkedin: "https://www.linkedin.com/company/saathban/",
-  script: "https://script.google.com/macros/s/AKfycbwhsLn3sQDn49QhtyPq5gvMj2cM4FD8e-mOColpr1zeiQN2RJK3j9fEBEh-_GRIZjjmPHw/exec",
+  script: "https://script.google.com/macros/s/AKfycbwhsLn3sQDn49QhtyPq5gvMj2cM4FD8e-mOColpr1zeiQN2RJK3j9fEBEh-_GRIZjmPHw/exec",
 };
 
 // ─── Fade-In Observer ───
@@ -852,15 +852,8 @@ export default function Saathban() {
                       if (!email.includes("@")) return;
                       setSubLoading(true);
                       setSubError(false);
-                      try {
-                        await fetch(SOCIAL_LINKS.script, {
-                          method: "POST",
-                          body: JSON.stringify({ type: "newsletter", email }),
-                        });
-                        setSubbed(true);
-                      } catch {
-                        setSubError(true);
-                      }
+                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "newsletter", email }) });
+                      setSubbed(true);
                       setSubLoading(false);
                     }}>{subLoading ? "Subscribing..." : "Subscribe"}</Btn>
                   </div>
@@ -968,15 +961,8 @@ export default function Saathban() {
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
                     <Btn onClick={async () => {
                       if (!contact.name || !contact.email || !contact.message) return;
-                      try {
-                        await fetch(SOCIAL_LINKS.script, {
-                          method: "POST",
-                          body: JSON.stringify({ type: "contact", ...contact }),
-                        });
-                        setSent(true);
-                      } catch {
-                        alert("Something went wrong. Please email us at hr@saathban.com");
-                      }
+                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "contact", ...contact }) });
+                      setSent(true);
                     }}>Send Message</Btn>
                   </div>
                 )}
