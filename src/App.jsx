@@ -90,7 +90,7 @@ const RESEARCH = [
   { title: "Ageing in a Young Nation",
     year: "2026",
     summary: "Our foundational secondary report examining global and Pakistan demographics with special emphasis on the elderly. Documenting ageing trends, policy landscape, and the institutional ecosystem.",
-    link: "/ageing-in-a-young-nation.pdf", // replace null with report URL when ready e.g. "/reports/saathban-2025.pdf"
+    link: "/ageing-in-a-young-nation.pdf",
     tag: "Our Report",
     tagColor: C.brown, },
   // ── Add more reports below ──
@@ -713,12 +713,21 @@ export default function Saathban() {
             </h3>
             <div className="grid2" style={{ marginBottom: 56 }}>
               {RESEARCH.map((r, i) => (
-                <Card key={i} style={{ borderLeft: `4px solid ${C.green}` }}>
+                <Card key={i} style={{ borderLeft: `4px solid ${r.tagColor}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                     <h4 style={{ fontSize: 17, fontWeight: 700, color: C.green, flex: 1, lineHeight: 1.4 }}>{r.title}</h4>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: C.green, background: `${C.green}10`, padding: "4px 12px", borderRadius: 20, whiteSpace: "nowrap", marginLeft: 12 }}>{r.year}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: r.tagColor, background: `${r.tagColor}10`, padding: "4px 12px", borderRadius: 20, whiteSpace: "nowrap", marginLeft: 12 }}>{r.year}</span>
                   </div>
-                  <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.65 }}>{r.summary}</p>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: r.tagColor, background: `${r.tagColor}10`, padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-block", marginBottom: 10 }}>{r.tag}</span>
+                  <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.65, marginBottom: 16 }}>{r.summary}</p>
+                  {r.link ? (
+                    <a href={r.link} target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: 13, fontWeight: 600, color: r.tagColor, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none" }}>
+                      View Report →
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: 13, color: C.textMuted, fontStyle: "italic" }}>Full report coming soon</span>
+                  )}
                 </Card>
               ))}
             </div>
@@ -852,7 +861,9 @@ export default function Saathban() {
                       if (!email.includes("@")) return;
                       setSubLoading(true);
                       setSubError(false);
-                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "newsletter", email }) });
+                      await fetch(SOCIAL_LINKS.script + "?type=newsletter&email=" + encodeURIComponent(email),
+                        { method: "GET", mode: "no-cors" }
+                      );
                       setSubbed(true);
                       setSubLoading(false);
                     }}>{subLoading ? "Subscribing..." : "Subscribe"}</Btn>
@@ -961,7 +972,13 @@ export default function Saathban() {
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
                     <Btn onClick={async () => {
                       if (!contact.name || !contact.email || !contact.message) return;
-                      await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: JSON.stringify({ type: "contact", ...contact }) });
+                      await fetch(SOCIAL_LINKS.script + "?type=contact"
+                        + "&name=" + encodeURIComponent(contact.name)
+                        + "&email=" + encodeURIComponent(contact.email)
+                        + "&message=" + encodeURIComponent(contact.message)
+                        + "&contactType=" + encodeURIComponent(contact.contactType),
+                        { method: "GET", mode: "no-cors" }
+                      );
                       setSent(true);
                     }}>Send Message</Btn>
                   </div>
