@@ -15,13 +15,30 @@ const C = {
 };
 
 // ─── Data ───
+const FOUNDERS = [
+  {
+    name: "Maheen Shafiq",
+    role: "Co-Founder",
+    img: "/team-maheen.jpg", // drop B&W photo in /public
+    bio: "bio soon",
+    message: "message soon",
+  },
+  {
+    name: "Tahir Sajeel Farooq",
+    role: "Co-Founder",
+    img: "/team-sajeel.jpg", // drop B&W photo in /public
+    bio: "bio soon",
+    message: "message soon",
+  },
+];
+
 const TEAM = [
-  { name: "Co-Founder", role: "Co-Founder", initials: "CF", color: C.green },
-  { name: "Co-Founder", role: "Co-Founder", initials: "CF", color: C.brown },
+  { name: "Maheen Shafiq", role: "Co-Founder", initials: "MS", color: C.green },
+  { name: "Tahir Sajeel Farooq", role: "Co-Founder", initials: "TSF", color: C.brown },
   { name: "Research Head", role: "Research Head", initials: "RH", color: C.greenMuted },
   { name: "Research Assistant", role: "Research Assistant", initials: "RA", color: C.brownLight },
   { name: "Design Associate", role: "Design Associate", initials: "DA", color: C.olive },
-  { name: "Team Member", role: "Team Member", initials: "TM", color: C.sage },
+  { name: "Team Member", role: "Strategy Associate", initials: "SA", color: C.sage },
 ];
 //-- Events --
 // to add a new event: copy one object below and fill in the details
@@ -116,6 +133,58 @@ const SOCIAL_LINKS = {
   linkedin: "https://www.linkedin.com/company/saathban/",
   script: "https://script.google.com/macros/s/AKfycbwhsLn3sQDn49QhtyPq5gvMj2cM4FD8e-mOColpr1zeiQN2RJK3j9fEBEh-_GRIZjmPHw/exec",
 };
+
+// ─── Carousel Component ───
+function Carousel({ items, renderCard, perPage = 3 }) {
+  const [idx, setIdx] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const pp = isMobile ? 1 : perPage;
+  const total = Math.ceil(items.length / pp);
+  const prev = () => setIdx(i => Math.max(0, i - 1));
+  const next = () => setIdx(i => Math.min(total - 1, i + 1));
+  const visible = items.slice(idx * pp, idx * pp + pp);
+
+  if (items.length <= pp) {
+    return (
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${pp}, 1fr)`, gap: 28 }}>
+        {items.map((item, i) => renderCard(item, i))}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${pp}, 1fr)`, gap: 28, minHeight: 280 }}>
+        {visible.map((item, i) => renderCard(item, i))}
+      </div>
+      {/* Controls */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginTop: 32 }}>
+        <button onClick={prev} disabled={idx === 0}
+          style={{ width: 40, height: 40, borderRadius: "50%", border: `2px solid ${idx === 0 ? C.warmGray : C.green}`, background: "transparent", cursor: idx === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", color: idx === 0 ? C.warmGray : C.green, fontSize: 18, fontWeight: 700 }}>
+          ←
+        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          {Array.from({ length: total }).map((_, i) => (
+            <div key={i} onClick={() => setIdx(i)}
+              style={{ width: i === idx ? 24 : 8, height: 8, borderRadius: 4, background: i === idx ? C.green : C.warmGray, cursor: "pointer", transition: "all 0.3s ease" }} />
+          ))}
+        </div>
+        <button onClick={next} disabled={idx === total - 1}
+          style={{ width: 40, height: 40, borderRadius: "50%", border: `2px solid ${idx === total - 1 ? C.warmGray : C.green}`, background: "transparent", cursor: idx === total - 1 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", color: idx === total - 1 ? C.warmGray : C.green, fontSize: 18, fontWeight: 700 }}>
+          →
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // ─── Fade-In Observer ───
 function FadeIn({ children, className = "", delay = 0, style: extra = {} }) {
@@ -421,6 +490,8 @@ export default function Saathban() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
   if (activeEvent) {
     return <EventDetailPage event={activeEvent} onBack={() => { setActiveEvent(null); setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 100); }} />;
   }
@@ -436,7 +507,13 @@ export default function Saathban() {
     </a>
   );
 
-  const isValidEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const ABOUT_TABS = [
+    { key: "about", label: "Who We Are" },
+    { key: "founders", label: "Our Founders" },
+    { key: "mission", label: "Our Mission" },
+    { key: "vision", label: "Our Vision" },
+    { key: "team", label: "Our Team" },
+  ];
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", color: C.textMain, background: C.bg, minHeight: "100vh", overflowX: "hidden" }}>
@@ -583,14 +660,12 @@ export default function Saathban() {
       <section id="about" className="section-pad" style={{ padding: "100px 0", background: C.white }}>
         <div style={px}>
           <SecTitle sub="The Heart of Togetherness">About Saathban</SecTitle>
-
-          {/* Tabs */}
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 44, flexWrap: "wrap" }}>
-            {[{ key: "about", label: "Who We Are" }, { key: "mission", label: "Our Mission" }, { key: "vision", label: "Our Vision" }, { key: "team", label: "Our Team" }].map(t => (
+            {ABOUT_TABS.map(t => (
               <button key={t.key} onClick={() => setActiveTab(t.key)} style={{
                 fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 600, padding: "10px 28px", borderRadius: 40, border: "none", cursor: "pointer",
                 background: activeTab === t.key ? C.green : `${C.warmGray}60`,
-                color: activeTab === t.key ? C.cream : C.brown, transition: "all 0.3s ease", letterSpacing: "0.02em",
+                color: activeTab === t.key ? C.cream : C.brown, transition: "all 0.3s ease",
               }}>{t.label}</button>
             ))}
           </div>
@@ -599,43 +674,64 @@ export default function Saathban() {
           {activeTab === "about" && (
             <FadeIn>
               <div style={{ maxWidth: 860, margin: "0 auto" }}>
-                {/* The Gap We Bridge */}
                 <div style={{ marginBottom: 48 }}>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.green, marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.green}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: 18 }}>🌿</span>
-                    </span>
+                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.green}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><span style={{ fontSize: 18 }}>🌿</span></span>
                     The Gap We Bridge
                   </h3>
-                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>
-                    For too long, society has moved in separate circles. We've placed our experience on the sidelines and our energy at the core. At Saathban, we believe that a community is only as strong as its connections. We are the bridge between the keepers of our legacy and the leaders of our future.
-                  </p>
+                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>For too long, society has moved in separate circles. We've placed our experience on the sidelines and our energy at the core. At Saathban, we believe that a community is only as strong as its connections. We are the bridge between the keepers of our legacy and the leaders of our future.</p>
                 </div>
-
-                {/* Beyond Care, Toward Contribution */}
                 <div style={{ marginBottom: 48 }}>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.green, marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.brown}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: 18 }}>🤝</span>
-                    </span>
+                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.brown}10`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><span style={{ fontSize: 18 }}>🤝</span></span>
                     Beyond Care, Toward Contribution
                   </h3>
-                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>
-                    We are a platform that celebrates age as it tends to bring about contentment, wisdom and peace. By creating a space for <strong style={{ color: C.green }}>Saath-Icons</strong> (our elders) and <strong style={{ color: C.brown }}>Saath-Buddies</strong> (our youth) to interact, we transform quiet moments into shared milestones. Whether it's exchanging a life lesson, mastering a new skill, or simply sharing a meal, we ensure that every voice is heard and every life is lived with purpose.
-                  </p>
+                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>We are a platform that celebrates age as it tends to bring about contentment, wisdom and peace. By creating a space for <strong style={{ color: C.green }}>Saath-Icons</strong> (our elders) and <strong style={{ color: C.brown }}>Saath-Buddies</strong> (our youth) to interact, we transform quiet moments into shared milestones.</p>
                 </div>
-
-                {/* A Timeless Society */}
                 <div style={{ background: `linear-gradient(135deg, ${C.green}08, ${C.brown}06)`, borderRadius: 20, padding: "36px 40px", border: `1px solid ${C.warmGray}50` }}>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.green, marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.sage}20`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: 18 }}>🌳</span>
-                    </span>
+                    <span style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.sage}20`, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><span style={{ fontSize: 18 }}>🌳</span></span>
                     A Timeless Society
                   </h3>
-                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>
-                    Inspired by the strength of a rooted tree and the warmth of a rising sun, Saathban is building a seamless reality where age is a badge of honor, and togetherness is our natural state.
-                  </p>
+                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted, paddingLeft: 48 }}>Inspired by the strength of a rooted tree and the warmth of a rising sun, Saathban is building a seamless reality where age is a badge of honor, and togetherness is our natural state.</p>
+                </div>
+              </div>
+            </FadeIn>
+          )}
+
+          {/* Founders */}
+          {activeTab === "founders" && (
+            <FadeIn>
+              <div style={{ maxWidth: 960, margin: "0 auto" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 36 }} className="mission-grid">
+                  {FOUNDERS.map((f, i) => (
+                    <div key={i} style={{ background: C.bg, borderRadius: 20, overflow: "hidden", boxShadow: "0 2px 20px rgba(6,50,20,0.06)", border: `1px solid ${C.warmGray}50` }}>
+                      {/* Photo */}
+                      <div style={{ height: 240, background: `linear-gradient(135deg, ${C.green}12, ${C.brown}08)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+                        <img src={f.img} alt={f.name}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(100%)", display: "block" }}
+                          onError={e => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }} />
+                        {/* Fallback initials if no photo yet */}
+                        <div style={{ display: "none", position: "absolute", inset: 0, alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
+                          <div style={{ width: 80, height: 80, borderRadius: "50%", background: i === 0 ? `${C.green}20` : `${C.brown}20`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: i === 0 ? C.green : C.brown }}>{f.name.split(" ").map(w => w[0]).join("")}</span>
+                          </div>
+                          <span style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic" }}>Photo coming soon</span>
+                        </div>
+                      </div>
+                      {/* Content */}
+                      <div style={{ padding: 32 }}>
+                        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 4 }}>{f.name}</h3>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: i === 0 ? C.green : C.brown, background: i === 0 ? `${C.green}10` : `${C.brown}10`, padding: "4px 14px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-block", marginBottom: 16 }}>{f.role}</span>
+                        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.textMuted, marginBottom: 20 }}>{f.bio}</p>
+                        {/* Message */}
+                        <div style={{ background: i === 0 ? `${C.green}06` : `${C.brown}06`, borderLeft: `3px solid ${i === 0 ? C.green : C.brown}`, borderRadius: "0 12px 12px 0", padding: "16px 20px" }}>
+                          <div style={{ fontSize: 28, color: i === 0 ? C.green : C.brown, opacity: 0.25, fontFamily: "Georgia, serif", lineHeight: 1, marginBottom: 6 }}>"</div>
+                          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 15, fontStyle: "italic", color: i === 0 ? C.green : C.brown, lineHeight: 1.7 }}>{f.message}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </FadeIn>
@@ -647,15 +743,13 @@ export default function Saathban() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center" }} className="mission-grid">
                 <div>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 18 }}>Our Mission</h3>
-                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted }}>
-                    We are working toward dismantling the barriers of age by facilitating purposeful interactions between generations. By creating structured opportunities for mentorship and shared experiences, we ensure that every individual remains an active contributor to the social, emotional, and cultural wealth of our society.
-                  </p>
+                  <p style={{ fontSize: 16, lineHeight: 1.8, color: C.textMuted }}>We are working toward dismantling the barriers of age by facilitating purposeful interactions between generations. By creating structured opportunities for mentorship and shared experiences, we ensure that every individual remains an active contributor to the social, emotional, and cultural wealth of our society.</p>
                 </div>
                 <div style={{ background: `linear-gradient(135deg, ${C.green}08, ${C.brown}06)`, borderRadius: 20, padding: 40, display: "flex", flexDirection: "column", gap: 20, border: `1px solid ${C.warmGray}50` }}>
                   {["Dismantle barriers of age through purposeful interaction", "Facilitate mentorship between Saath-Icons & Saath-Buddies", "Create structured opportunities for shared experiences", "Ensure every individual contributes to our collective wealth"].map((item, i) => (
                     <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${[C.green, C.brown, C.sage, C.olive][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
-                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: [C.green, C.brown, C.sage, C.olive][i] }} />
+                      <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${[C.green,C.brown,C.sage,C.olive][i]}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: [C.green,C.brown,C.sage,C.olive][i] }} />
                       </div>
                       <span style={{ fontSize: 15, color: C.textMain, lineHeight: 1.6 }}>{item}</span>
                     </div>
@@ -671,13 +765,9 @@ export default function Saathban() {
               <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
                 <div style={{ fontSize: 60, marginBottom: 20, opacity: 0.15 }}>✦</div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: C.green, marginBottom: 20 }}>Our Vision</h3>
-                <p style={{ fontSize: 18, lineHeight: 1.8, color: C.textMuted, marginBottom: 24 }}>
-                  To redefine aging as a period of renewed status and social vitality. We imagine a future where the artificial divide between young and old is gone, replaced by a seamless society that treasures experience as much as energy and views togetherness as our greatest strength.
-                </p>
+                <p style={{ fontSize: 18, lineHeight: 1.8, color: C.textMuted, marginBottom: 24 }}>To redefine aging as a period of renewed status and social vitality. We imagine a future where the artificial divide between young and old is gone, replaced by a seamless society that treasures experience as much as energy and views togetherness as our greatest strength.</p>
                 <div style={{ background: `linear-gradient(135deg, ${C.green}10, ${C.sage}15)`, borderRadius: 16, padding: "28px 36px", display: "inline-block", marginTop: 12 }}>
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontStyle: "italic", color: C.green, lineHeight: 1.6 }}>
-                    "Age is a badge of honor, and togetherness is our natural state."
-                  </p>
+                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontStyle: "italic", color: C.green, lineHeight: 1.6 }}>"Age is a badge of honor, and togetherness is our natural state."</p>
                 </div>
               </div>
             </FadeIn>
@@ -686,14 +776,14 @@ export default function Saathban() {
           {/* Team */}
           {activeTab === "team" && (
             <FadeIn>
-              <div className="grid4" style={{ maxWidth: 960, margin: "0 auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, maxWidth: 960, margin: "0 auto" }} className="grid3r">
                 {TEAM.map((m, i) => (
                   <Card key={i} style={{ textAlign: "center", padding: 28 }}>
                     <div style={{ width: 72, height: 72, borderRadius: "50%", background: `${m.color}12`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", border: `2px solid ${m.color}25` }}>
                       <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: m.color }}>{m.initials}</span>
                     </div>
                     <h4 style={{ fontSize: 16, fontWeight: 700, color: C.green, marginBottom: 4 }}>{m.name}</h4>
-                    <p style={{ fontSize: 13, color: C.brown, fontWeight: 600, marginBottom: 10, letterSpacing: "0.02em" }}>{m.role}</p>
+                    <p style={{ fontSize: 13, color: C.brown, fontWeight: 600, letterSpacing: "0.02em" }}>{m.role}</p>
                   </Card>
                 ))}
               </div>
@@ -705,19 +795,19 @@ export default function Saathban() {
       {/* ═══════════ OUR WORK ═══════════ */}
       <section id="work" className="section-pad" style={{ padding: "100px 0", background: C.bg }}>
         <div style={px}>
-          <SecTitle sub="From grassroots events to academic research — here's how we make a difference.">Our Work</SecTitle>
+          <SecTitle sub="From grassroots events to research — here's how we make a difference.">Our Work</SecTitle>
 
-          {/* Research */}
+          {/* Reports Carousel */}
           <FadeIn>
             <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{ width: 36, height: 36, borderRadius: 10, background: `${C.green}10`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
               </span>
               Research & Reports
             </h3>
-            <div className="grid2" style={{ marginBottom: 56 }}>
-              {RESEARCH.map((r, i) => (
-                <Card key={i} style={{ borderLeft: `4px solid ${r.tagColor}` }}>
+            <div style={{ marginBottom: 56 }}>
+              <Carousel items={RESEARCH} perPage={2} renderCard={(r, i) => (
+                <Card key={i} style={{ borderLeft: `4px solid ${r.tagColor}`, height: "100%" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                     <h4 style={{ fontSize: 17, fontWeight: 700, color: C.green, flex: 1, lineHeight: 1.4 }}>{r.title}</h4>
                     <span style={{ fontSize: 12, fontWeight: 600, color: r.tagColor, background: `${r.tagColor}10`, padding: "4px 12px", borderRadius: 20, whiteSpace: "nowrap", marginLeft: 12 }}>{r.year}</span>
@@ -725,50 +815,41 @@ export default function Saathban() {
                   <span style={{ fontSize: 11, fontWeight: 700, color: r.tagColor, background: `${r.tagColor}10`, padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.06em", display: "inline-block", marginBottom: 10 }}>{r.tag}</span>
                   <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.65, marginBottom: 16 }}>{r.summary}</p>
                   {r.link ? (
-                    <a href={r.link} target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: 13, fontWeight: 600, color: r.tagColor, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none" }}>
-                      View Report →
-                    </a>
+                    <a href={r.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 600, color: r.tagColor, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none" }}>View Report →</a>
                   ) : (
                     <span style={{ fontSize: 13, color: C.textMuted, fontStyle: "italic" }}>Full report coming soon</span>
                   )}
                 </Card>
-              ))}
+              )} />
             </div>
           </FadeIn>
 
-          {/* Events */}
+          {/* Events Carousel */}
           <FadeIn delay={0.1}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 8, display: "flex", alignItems: "center", gap: 12 }}>
               <span style={{ width: 36, height: 36, borderRadius: 10, background: `${C.brown}10`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               </span>
               Events
             </h3>
-            <div className="grid3">
-              {EVENTS.map((ev, i) => (
-                <Card key={i} style={{ overflow: "hidden", position: "relative" }}
-                  onClick={ev.detail ? () => setActiveEvent(ev) : undefined}
-                  hover={true}>
-                  <div style={{ height: 6, background: ev.color, margin: "-32px -32px 20px -32px", borderRadius: "16px 16px 0 0" }} />
-                  <span style={{ position: "absolute", top: 22, right: 20, fontSize: 11, fontWeight: 700, color: ev.detail ? C.brown : C.green, background: ev.detail ? `${C.brown}12` : `${C.green}10`, padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    {ev.detail ? "Past" : "Upcoming"}
-                  </span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: ev.color, textTransform: "uppercase", letterSpacing: "0.08em" }}>{ev.date}</span>
-                  <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: "8px 0", lineHeight: 1.35 }}>{ev.title}</h4>
-                  <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    {ev.loc}
-                  </p>
-                  <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, marginBottom: ev.detail ? 16 : 0 }}>{ev.desc}</p>
-                  {ev.detail && (
-                    <span style={{ fontSize: 13, fontWeight: 600, color: C.brown, display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      View Event Details →
-                    </span>
-                  )}
-                </Card>
-              ))}
-            </div>
+            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 24, marginLeft: 48 }}>Click on a past event to view photos, highlights, and full details.</p>
+            <Carousel items={EVENTS} perPage={3} renderCard={(ev, i) => (
+              <Card key={i} style={{ overflow: "hidden", position: "relative", height: "100%" }}
+                onClick={ev.detail ? () => setActiveEvent(ev) : undefined}>
+                <div style={{ height: 6, background: ev.color, margin: "-32px -32px 20px -32px", borderRadius: "16px 16px 0 0" }} />
+                <span style={{ position: "absolute", top: 22, right: 20, fontSize: 11, fontWeight: 700, color: ev.detail ? C.brown : C.green, background: ev.detail ? `${C.brown}12` : `${C.green}10`, padding: "3px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  {ev.detail ? "Past" : "Upcoming"}
+                </span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: ev.color, textTransform: "uppercase", letterSpacing: "0.08em" }}>{ev.date}</span>
+                <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: "8px 0", lineHeight: 1.35 }}>{ev.title}</h4>
+                <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 12, display: "flex", alignItems: "center", gap: 6 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {ev.loc}
+                </p>
+                <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, marginBottom: ev.detail ? 16 : 0 }}>{ev.desc}</p>
+                {ev.detail && <span style={{ fontSize: 13, fontWeight: 600, color: C.brown, display: "inline-flex", alignItems: "center", gap: 6 }}>View Event Details →</span>}
+              </Card>
+            )} />
           </FadeIn>
         </div>
       </section>
@@ -777,40 +858,27 @@ export default function Saathban() {
       <section id="involve" style={{ padding: "100px 0", background: `linear-gradient(135deg, ${C.green}, ${C.greenLight})`, position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", border: "1px solid rgba(250,243,233,0.08)" }} />
         <div style={{ position: "absolute", bottom: -50, left: -50, width: 250, height: 250, borderRadius: "50%", background: `${C.brown}10` }} />
-
         <div style={{ ...px, position: "relative", zIndex: 1 }}>
           <SecTitle light sub="Whether you give your time or your platform — every contribution counts.">Get Involved</SecTitle>
-
-          <div className="grid2" style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, maxWidth: 860, margin: "0 auto" }} className="mission-grid">
             <FadeIn delay={0.1}>
               <div style={{ background: "rgba(250,243,233,0.08)", backdropFilter: "blur(12px)", borderRadius: 20, padding: 40, border: "1px solid rgba(250,243,233,0.12)", height: "100%" }}>
                 <div style={{ width: 52, height: 52, borderRadius: 14, background: `${C.cream}15`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.cream, marginBottom: 14 }}>Become a Saath-Buddy</h3>
-                <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>
-                  Spend time with Saath-Icons, help organise events, or contribute your skills remotely. Volunteering with Saathban means making a direct impact on elderly well-being in your community.
-                </p>
-                <Btn variant="brown" onClick={() => {
-                  setContact(c => ({ ...c, contactType: "Volunteer", message: "Hi, I'm interested in volunteering with Saathban." }));
-                  scrollTo("contact");
-                }}>Volunteer Now →</Btn>
+                <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>Spend time with Saath-Icons, help organise events, or contribute your skills remotely. Volunteering with Saathban means making a direct impact on elderly well-being in your community.</p>
+                <Btn variant="brown" onClick={() => { setContact(c => ({ ...c, contactType: "Volunteer", message: "Hi, I'm interested in volunteering with Saathban." })); scrollTo("contact"); }}>Volunteer Now →</Btn>
               </div>
             </FadeIn>
-
             <FadeIn delay={0.2}>
               <div style={{ background: "rgba(250,243,233,0.08)", backdropFilter: "blur(12px)", borderRadius: 20, padding: 40, border: "1px solid rgba(250,243,233,0.12)", height: "100%" }}>
                 <div style={{ width: 52, height: 52, borderRadius: 14, background: `${C.cream}15`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.cream, marginBottom: 14 }}>Partner With Us</h3>
-                <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>
-                  Are you an organisation, old age home, or senior living community? Let's collaborate to create intergenerational programmes, co-host events, or support our research.
-                </p>
-                <Btn variant="brown" onClick={() => {
-                  setContact(c => ({ ...c, contactType: "Partner", message: "Hi, I'd like to explore partnering with Saathban." }));
-                  scrollTo("contact");
-                }}>Partner With Us →</Btn>
+                <p style={{ fontSize: 15, color: "rgba(250,243,233,0.72)", lineHeight: 1.7, marginBottom: 24 }}>Are you an organisation, old age home, or senior living community? Let's collaborate to create intergenerational programmes, co-host events, or support our research.</p>
+                <Btn variant="brown" onClick={() => { setContact(c => ({ ...c, contactType: "Partner", message: "Hi, I'd like to explore partnering with Saathban." })); scrollTo("contact"); }}>Partner With Us →</Btn>
               </div>
             </FadeIn>
           </div>
@@ -821,35 +889,26 @@ export default function Saathban() {
       <section id="blog" className="section-pad" style={{ padding: "100px 0", background: C.white }}>
         <div style={px}>
           <SecTitle sub="Stories, insights, and reflections on intergenerational connection and well-being.">Blog & Stories</SecTitle>
-
-          <div className="grid3">
-            {BLOGS.map((b, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <Card style={{ display: "flex", flexDirection: "column", height: "100%", padding: 0, overflow: "hidden" }}>
-                  <div style={{ height: 140, background: `linear-gradient(135deg, ${b.color}15, ${b.color}05)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-                    <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, color: `${b.color}15`, fontWeight: 700 }}>{b.tag[0]}</span>
-                    <span style={{ position: "absolute", top: 16, left: 16, fontSize: 11, fontWeight: 700, color: b.color, background: `${b.color}12`, padding: "5px 14px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.06em" }}>{b.tag}</span>
-                  </div>
-                  <div style={{ padding: "24px 28px 28px", flex: 1, display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 12, color: C.textMuted, fontWeight: 500, marginBottom: 8 }}>{b.date}</span>
-                    <h4 style={{ fontSize: 17, fontWeight: 700, color: C.green, lineHeight: 1.4, marginBottom: 10 }}>{b.title}</h4>
-                    <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, flex: 1 }}>{b.excerpt}</p>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: C.green, marginTop: 16, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      Read More →
-                    </span>
-                  </div>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
+          <Carousel items={BLOGS} perPage={3} renderCard={(b, i) => (
+            <Card key={i} style={{ display: "flex", flexDirection: "column", height: "100%", padding: 0, overflow: "hidden" }}>
+              <div style={{ height: 140, background: `linear-gradient(135deg, ${b.color}15, ${b.color}05)`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, color: `${b.color}15`, fontWeight: 700 }}>{b.tag[0]}</span>
+                <span style={{ position: "absolute", top: 16, left: 16, fontSize: 11, fontWeight: 700, color: b.color, background: `${b.color}12`, padding: "5px 14px", borderRadius: 20, textTransform: "uppercase", letterSpacing: "0.06em" }}>{b.tag}</span>
+              </div>
+              <div style={{ padding: "24px 28px 28px", flex: 1, display: "flex", flexDirection: "column" }}>
+                <span style={{ fontSize: 12, color: C.textMuted, fontWeight: 500, marginBottom: 8 }}>{b.date}</span>
+                <h4 style={{ fontSize: 17, fontWeight: 700, color: C.green, lineHeight: 1.4, marginBottom: 10 }}>{b.title}</h4>
+                <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, flex: 1 }}>{b.excerpt}</p>
+                <span style={{ fontSize: 13, fontWeight: 600, color: C.green, marginTop: 16, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}>Read More →</span>
+              </div>
+            </Card>
+          )} />
 
           {/* Newsletter */}
           <FadeIn delay={0.2}>
             <div style={{ marginTop: 64, background: `linear-gradient(135deg, ${C.green}08, ${C.brown}06)`, borderRadius: 20, padding: "48px 40px", textAlign: "center", border: `1px solid ${C.warmGray}50`, maxWidth: 680, marginInline: "auto" }}>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: C.green, marginBottom: 10 }}>Stay Connected</h3>
-              <p style={{ fontSize: 15, color: C.textMuted, marginBottom: 28, lineHeight: 1.6 }}>
-                Subscribe to our newsletter for updates on research, events, and stories from the Saathban community.
-              </p>
+              <p style={{ fontSize: 15, color: C.textMuted, marginBottom: 28, lineHeight: 1.6 }}>Subscribe to our newsletter for updates on research, events, and stories from the Saathban community.</p>
               {subbed ? (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, color: C.green, fontWeight: 600, fontSize: 16 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.5"><path d="M20 6L9 17l-5-5"/></svg>
@@ -858,34 +917,19 @@ export default function Saathban() {
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
                   <div style={{ display: "flex", gap: 12, maxWidth: 440, width: "100%", flexWrap: "wrap", justifyContent: "center" }}>
-                    <input type="email" placeholder="Your email address" value={email}
-                      onChange={e => setEmail(e.target.value)}
+                    <input type="email" placeholder="Your email address" value={email} onChange={e => setEmail(e.target.value)}
                       style={{ flex: "1 1 240px", padding: "14px 20px", borderRadius: 50, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.textMain, minWidth: 200 }} />
-                    {subEmailError && (
-                      <p style={{ fontSize: 12, color: C.brown, margin: 0 }}>
-                        {subEmailError}
-                      </p>
-                    )}
                     <Btn onClick={async () => {
                       setSubEmailError("");
-                      if (!isValidEmail(email)) {
-                        setSubEmailError("Please enter a valid email address.");
-                        return;
-                      }
+                      if (!isValidEmail(email)) { setSubEmailError("Please enter a valid email address."); return; }
                       setSubLoading(true);
-                      const fd = new FormData();
-                      fd.append("type", "newsletter");
-                      fd.append("email", email);
+                      const fd = new FormData(); fd.append("type", "newsletter"); fd.append("email", email);
                       await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: fd });
-                      setSubbed(true);
-                      setSubLoading(false);
+                      setSubbed(true); setSubLoading(false);
                     }}>{subLoading ? "Subscribing..." : "Subscribe"}</Btn>
                   </div>
-                  {subError && (
-                    <p style={{ fontSize: 13, color: C.brown, margin: 0 }}>
-                      Something went wrong — email us at <a href="mailto:hr@saathban.com" style={{ color: C.brown }}>hr@saathban.com</a> to subscribe.
-                    </p>
-                  )}
+                  {subEmailError && <p style={{ fontSize: 12, color: C.brown, margin: 0 }}>{subEmailError}</p>}
+                  {subError && <p style={{ fontSize: 13, color: C.brown, margin: 0 }}>Something went wrong — email us at <a href="mailto:hr@saathban.com" style={{ color: C.brown }}>hr@saathban.com</a></p>}
                 </div>
               )}
             </div>
@@ -897,52 +941,28 @@ export default function Saathban() {
       <section id="contact" className="section-pad" style={{ padding: "100px 0", background: C.bg }}>
         <div style={px}>
           <SecTitle sub="Have questions, ideas, or want to collaborate? We'd love to hear from you.">Contact Us</SecTitle>
-
-          <div className="grid2" style={{ maxWidth: 920, margin: "0 auto", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, maxWidth: 920, margin: "0 auto", alignItems: "start" }} className="mission-grid">
             <FadeIn>
               <div>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: C.green, marginBottom: 24 }}>Reach Out</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                  <a href={`mailto:${SOCIAL_LINKS.email}`} style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Email</div>
-                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>{SOCIAL_LINKS.email}</div>
-                    </div>
-                  </a>
-                  <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.brown}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill={C.brown}/></svg>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Instagram</div>
-                      <div style={{ fontSize: 15, color: C.brown, fontWeight: 500 }}>@saathban</div>
-                    </div>
-                  </a>
-                  <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Facebook</div>
-                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>Saathban</div>
-                    </div>
-                  </a>
-                  <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 14, background: `${C.green}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>LinkedIn</div>
-                      <div style={{ fontSize: 15, color: C.green, fontWeight: 500 }}>Saathban</div>
-                    </div>
-                  </a>
+                  {[
+                    { href: `mailto:${SOCIAL_LINKS.email}`, label: "Email", value: SOCIAL_LINKS.email, color: C.green, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg> },
+                    { href: SOCIAL_LINKS.instagram, label: "Instagram", value: "@saathban", color: C.brown, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.brown} strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill={C.brown}/></svg> },
+                    { href: SOCIAL_LINKS.facebook, label: "Facebook", value: "Saathban", color: C.green, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> },
+                    { href: SOCIAL_LINKS.linkedin, label: "LinkedIn", value: "Saathban", color: C.green, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> },
+                  ].map(({ href, label, value, color, icon }) => (
+                    <a key={label} href={href} target={href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" style={{ display: "flex", gap: 16, alignItems: "center", textDecoration: "none" }}>
+                      <div style={{ width: 48, height: 48, borderRadius: 14, background: `${color}10`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{icon}</div>
+                      <div>
+                        <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>{label}</div>
+                        <div style={{ fontSize: 15, color, fontWeight: 500 }}>{value}</div>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </div>
             </FadeIn>
-
             <FadeIn delay={0.15}>
               <Card>
                 {sent ? (
@@ -953,53 +973,33 @@ export default function Saathban() {
                     <h4 style={{ fontSize: 20, fontWeight: 700, color: C.green, marginBottom: 8 }}>Message Sent!</h4>
                     <p style={{ fontSize: 14, color: C.textMuted }}>We'll get back to you soon at {contact.email}.</p>
                     <span onClick={() => { setSent(false); setContact({ name: "", email: "", message: "", contactType: "General" }); }}
-                      style={{ fontSize: 13, color: C.brown, cursor: "pointer", marginTop: 12, display: "inline-block", fontWeight: 600 }}>
-                      Send another message
-                    </span>
+                      style={{ fontSize: 13, color: C.brown, cursor: "pointer", marginTop: 12, display: "inline-block", fontWeight: 600 }}>Send another message</span>
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <h4 style={{ fontSize: 18, fontWeight: 700, color: C.green }}>Send Us a Message</h4>
-                      {/* Contact type pill */}
                       <div style={{ display: "flex", gap: 6 }}>
                         {["General", "Volunteer", "Partner"].map(t => (
                           <span key={t} onClick={() => setContact(c => ({ ...c, contactType: t }))}
-                            style={{ fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, cursor: "pointer", letterSpacing: "0.04em",
-                              background: contact.contactType === t ? C.green : `${C.warmGray}60`,
-                              color: contact.contactType === t ? C.cream : C.textMuted,
-                              transition: "all 0.2s ease" }}>
-                            {t}
-                          </span>
+                            style={{ fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, cursor: "pointer", background: contact.contactType === t ? C.green : `${C.warmGray}60`, color: contact.contactType === t ? C.cream : C.textMuted, transition: "all 0.2s ease" }}>{t}</span>
                         ))}
                       </div>
                     </div>
-                    <input placeholder="Your Name" value={contact.name}
-                      onChange={e => setContact({ ...contact, name: e.target.value })}
+                    <input placeholder="Your Name" value={contact.name} onChange={e => setContact({ ...contact, name: e.target.value })}
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
-                    <input type="email" placeholder="Your Email" value={contact.email}
-                      onChange={e => setContact({ ...contact, email: e.target.value })}
-                      style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
-                    {emailError && (
-                      <p style={{ fontSize: 12, color: C.brown, marginTop: -10, marginBottom: -4 }}>
-                        {emailError}
-                      </p>
-                    )}
-                    <textarea placeholder="Your Message" rows={4} value={contact.message}
-                      onChange={e => setContact({ ...contact, message: e.target.value })}
+                    <input type="email" placeholder="Your Email" value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })}
+                      style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${emailError ? C.brown : C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg }} />
+                    {emailError && <p style={{ fontSize: 12, color: C.brown, marginTop: -10, marginBottom: -4 }}>{emailError}</p>}
+                    <textarea placeholder="Your Message" rows={4} value={contact.message} onChange={e => setContact({ ...contact, message: e.target.value })}
                       style={{ padding: "13px 18px", borderRadius: 12, border: `1.5px solid ${C.warmGray}`, fontSize: 15, fontFamily: "'DM Sans', sans-serif", background: C.bg, resize: "vertical" }} />
                     <Btn onClick={async () => {
                       setEmailError("");
                       if (!contact.name || !contact.email || !contact.message) return;
-                      if (!isValidEmail(contact.email)) {
-                        setEmailError("Please enter a valid email address.");
-                        return;
-                      }
+                      if (!isValidEmail(contact.email)) { setEmailError("Please enter a valid email address."); return; }
                       const fd = new FormData();
-                      fd.append("type", "contact");
-                      fd.append("name", contact.name);
-                      fd.append("email", contact.email);
-                      fd.append("message", contact.message);
+                      fd.append("type", "contact"); fd.append("name", contact.name);
+                      fd.append("email", contact.email); fd.append("message", contact.message);
                       fd.append("contactType", contact.contactType);
                       await fetch(SOCIAL_LINKS.script, { method: "POST", mode: "no-cors", body: fd });
                       setSent(true);
@@ -1017,8 +1017,8 @@ export default function Saathban() {
         <div style={px}>
           <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 40, marginBottom: 40, paddingBottom: 32, borderBottom: "1px solid rgba(250,243,233,0.1)" }}>
             <div style={{ maxWidth: 280 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                <img src="/logo-extended-light.png" alt="Saathban — Timeless Togetherness" style={{ height: 48, width: "auto", filter: "brightness(10)" }} />
+              <div style={{ marginBottom: 14 }}>
+                <img src="/logo-extended-light.png" alt="Saathban" style={{ height: 48, width: "auto", filter: "brightness(10)" }} />
               </div>
               <p style={{ fontSize: 14, lineHeight: 1.7 }}>A vibrant ecosystem where generations flourish together. Wisdom inherited, life shared, every age thriving as one.</p>
             </div>
